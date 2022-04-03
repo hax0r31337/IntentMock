@@ -1,0 +1,37 @@
+plugins {
+    id 'java'
+    id "com.github.johnrengelman.shadow" version "6.1.0"
+}
+
+group 'me.liuli.intentmock'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    include
+    implementation.extendsFrom(include)
+}
+
+dependencies {
+    // https://mvnrepository.com/artifact/com.alibaba/dns-cache-manipulator
+    include 'com.alibaba:dns-cache-manipulator:1.7.1'
+}
+
+shadowJar {
+    archiveClassifier.set("")
+    configurations = [project.configurations.include]
+    duplicatesStrategy DuplicatesStrategy.EXCLUDE
+
+    exclude "META-INF/**"
+}
+
+jar {
+    manifest.attributes(
+            'Premain-Class' : 'me.liuli.intentmock.Main'
+    )
+}
+
+tasks.build.dependsOn(shadowJar)
